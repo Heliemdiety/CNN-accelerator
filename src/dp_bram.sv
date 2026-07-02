@@ -20,7 +20,9 @@ module dp_bram #(
 );
 
     // The actual memory array
-    logic [DATA_WIDTH-1:0] ram [0:(2**ADDR_WIDTH)-1];
+    //(* ram_style = "block" *) logic [DATA_WIDTH-1:0] ram [0:(2ADDR_WIDTH)-1];
+    //logic [DATA_WIDTH-1:0] ram [0:(2**ADDR_WIDTH)-1];
+    (* ram_style = "block" *) logic [DATA_WIDTH-1:0] ram [0:(1<<ADDR_WIDTH)-1];
 
     // Port A Logic
     always_ff @(posedge clk) begin

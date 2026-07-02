@@ -18,7 +18,9 @@ module mac_pe
     // DSP48 mapped registers
     weight_t            weight_reg;
     act_t               act_reg;
-    logic signed [15:0] mult_reg;
+    
+    (* use_dsp = "yes" *) logic signed [15:0] mult_reg;
+    //slogic signed [15:0] mult_reg;
     psum_t              psum_reg;
     
     // Delay registers to align i_psum with the multiplier latency

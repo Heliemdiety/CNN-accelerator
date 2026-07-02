@@ -5,8 +5,8 @@ package cnn_pkg;
     typedef logic signed [31:0] psum_t;
     
     // Array Dimensions (Parameterized for scalability)
-    localparam int ARRAY_ROWS = 8;
-    localparam int ARRAY_COLS = 8;
+    localparam int ARRAY_ROWS = 9;
+    localparam int ARRAY_COLS = 1;
 
     // THE ARCHITECTURE UPGRADE: 
     // Lock every single array structure globally.
