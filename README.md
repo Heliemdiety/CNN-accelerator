@@ -19,6 +19,44 @@ The accelerator is built to maximize throughput and minimize off-chip memory acc
 *   **AXI4-Full Interface:** Custom read and write DMA engines handle high-throughput burst transactions directly to and from external memory.
 
 
+## 📂 Repository Structure
+
+The repository is organized into RTL source files (`src/`) and Design Verification testbenches (`dv/`).
+
+### 📁 `src/` (RTL Source Files)
+*   **Top-Level & Architecture**
+    *   `cnn_top.sv`: Top-level module integrating the CSR, DMA engines, memory buffers, and compute core.
+    *   `cnn_pkg.sv`: Global package defining strict data types and parameterized array dimensions.
+*   **Compute Core**
+    *   `systolic_array_2d.sv`: The scalable 2D mesh of MAC units managing the routing of activations and partial sums.
+    *   `mac_pe.sv`: The foundational Multiply-Accumulate Processing Element mapped to DSP slices.
+    *   `cnn_post_process.sv`: Post-computation scaling, bias addition, and ReLU activation unit.
+*   **Memory & Bus Interface**
+    *   `cnn_dma_read.sv` / `cnn_dma_write.sv`: FSM-driven AXI4 memory controllers for burst data transfers.
+    *   `ping_pong_bram.sv`: Dual-port memory wrapper managing the latency-hiding buffer swaps.
+    *   `dp_bram.sv`: True dual-port block RAM utilized for internal caching and output storage.
+*   **Control Logic**
+    *   `layer_sequencer.sv`: Microcode executor for autonomous multi-layer network execution.
+    *   `cnn_csr.sv`: Memory-mapped Control and Status Registers for host CPU interfacing.
+    *   `cnn_sys_ctrl.sv` & `address_gen.sv`: Pipeline control and memory address generation for the systolic array.
+
+### 📁 `dv/` (Design Verification & Testbenches)
+*   **System-Level Verification**
+    *   `cnn_top_tb.sv`: Full system top-level testbench verifying complete inference cycles.
+    *   `cnn_top_tb_8x8.sv`: Scaled system testbench verifying the parameterized 8x8 array configuration.
+*   **Compute Core Unit Tests**
+    *   `tb_systolic_array.sv`: Verification of the 2D mesh data routing and multi-cycle latency skew.
+    *   `tb_mac_pe.sv`: Cycle-accurate DSP pipeline verification for the individual processing element.
+    *   `tb_post_process.sv`: Unit test for quantization, shifting, and saturation clamping logic.
+*   **Memory & DMA Unit Tests**
+    *   `tb_cnn_dma_read.sv` & `tb_cnn_dma_write.sv`: Verification of AXI4 burst transactions and memory handshaking.
+    *   `tb_ping_pong.sv` & `tb_dp_bram.sv`: Read/write collision and buffer-swapping verification.
+*   **Control Logic Unit Tests**
+    *   `tb_layer_sequencer.sv`: Verification of microcode decoding and hardware trigger sequencing.
+    *   `tb_cnn_sys_ctrl.sv` & `tb_address_gen.sv`: Unit tests for pipeline draining and address boundaries.
+    *   `tb_cnn_csr.sv`: CPU read/write transaction verification for the control registers.
+
+
 ## ⚙️ Integration & Usage
 
 Designed as a memory-mapped hardware accelerator that can be integrated into a RISC-V SoC through a standard AXI4 interconnect, supporting host-controlled and autonomous inference modes.
@@ -36,3 +74,4 @@ Pre-load the network's memory map and quantization steps into the `microcode_rom
 
 *   **Simulation:** ModelSim, QuestaSim, or Vivado Simulator (XSim).
 *   **Synthesis:** Xilinx Vivado (Targeting Artix-7 or similar architectures).
+*   **Current Implementation** Post-implementation Fmax: 154 MHz (Xilinx Artix-7 FPGA).
