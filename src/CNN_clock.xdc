@@ -1,2 +1,3 @@
-# 1. The Clock Constraint (89.8 MHz)
-create_clock -period 11.130 -name sys_clk -waveform {0.000 5.565} [get_ports clk]
+# The Clock Constraint (150 MHz) ( Fmax = 154 MHz)
+
+create_clock -period 6.667 -name sys_clk [get_ports clk]
